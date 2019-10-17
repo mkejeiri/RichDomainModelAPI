@@ -1,4 +1,4 @@
-﻿using Logic.Utils;
+using Logic.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Utils
@@ -17,6 +17,14 @@ namespace Api.Utils
             unitOfWork.Commit();
            return base.Ok(Envelope.Ok());
         }
+
+
+        protected IActionResult CreatedAt<T>(object obj, T result)
+        {
+            unitOfWork.Commit();
+            return base.Ok(Envelope.Ok(result));
+        }
+
 
         protected IActionResult Ok<T>(T result)
         {

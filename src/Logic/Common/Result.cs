@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 
 namespace Logic.Common
 {
     public class Result
     {
-        public bool IsSuccess { get; }
+        private bool IsSuccess { get; }
         public string Error { get; }
         public bool IsFailure => !IsSuccess;
         
@@ -56,7 +56,7 @@ namespace Logic.Common
 
         public T Value {
             get {
-                if (!IsSuccess)
+                if (IsFailure)
                 {
                     throw new InvalidOperationException();
                 }

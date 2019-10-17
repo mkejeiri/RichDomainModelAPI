@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Api.Movies;
 using Api.Utils;
@@ -19,7 +19,9 @@ namespace Api.Customers
 
         //private readonly CustomerService _customerService;
 
-        public CustomersController(UnitOfWork unitOfWork,MovieRepository movieRepository, CustomerRepository customerRepository/*, CustomerService customerService*/) : base(unitOfWork)
+        public CustomersController(UnitOfWork unitOfWork
+            ,MovieRepository movieRepository, 
+            CustomerRepository customerRepository/*, CustomerService customerService*/) : base(unitOfWork)
         {
             _customerRepository = customerRepository;
             _movieRepository = movieRepository;
@@ -106,21 +108,29 @@ namespace Api.Customers
                 //    return BadRequest(ModelState);
                 //}
 
+                //This business rule should be elsewhere
                 if (_customerRepository.GetByEmail(emailOrError.Value) != null)
                 {
                     //return BadRequest("Email is already in use: " + item.Email);
                     return Error("Email is already in use: " + item.Email);
                 }
+            var customer = new Customer(customerNameOrError.Value, emailOrError.Value);
+                _customerRepository.Add(customer);
+            //_customerRepository.SaveChanges();
 
-                _customerRepository.Add(new Customer(customerNameOrError.Value, emailOrError.Value));
-                //_customerRepository.SaveChanges();
-                return Ok();
+
+            return CreatedAt(new { id = customer.Id }, Result<CreateCustomerDto>.Ok(new CreateCustomerDto { Email = customer.Email, Name = customer.Name }));
+            
+            //return CreatedAtAction(nameof(Get), new { id = customer.Id }, new CreateCustomerDto { Email= customer.Email, Name= customer.Name});
+            ///return Ok();
             //}
             //catch (Exception e)
             //{
             //    return StatusCode(500, new { error = e.Message });
             //}
         }
+
+       
 
         [HttpPut]
         [Route("{id}")]

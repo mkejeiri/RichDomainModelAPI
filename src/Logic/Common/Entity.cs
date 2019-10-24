@@ -48,6 +48,21 @@ namespace Logic.Common
             return (GetRealType().ToString() + Id).GetHashCode();
         }
 
+        //This create a dependency in NHibernate
+        //try this instead
+        
+        /*
+        private static Type RemoveProxyType(Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            // ReSharper disable once PossibleNullReferenceException
+            if (type.FullName.Contains("DynamicProxies")) return type.BaseType;
+            if (type.GetInterfaces().Any(t => t.Name == "INHibernateProxy")) return type.BaseType;
+
+        return type;
+    }
+        
+        */
         private Type GetRealType()
         {
             return NHibernateProxyHelper.GetClassWithoutInitializingProxy(this);

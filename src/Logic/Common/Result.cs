@@ -2,7 +2,7 @@ using System;
 
 namespace Logic.Common
 {
- public class Result
+    public class Result
     {
         private bool IsSuccess { get; }
         public string Error { get; }
@@ -36,6 +36,12 @@ namespace Logic.Common
             return new Result<T>(value, true, string.Empty);
         }
 
+
+        public static Result<T> ErrorList<T>(T value)
+        {
+            return new Result<T>(value, false, "Check Error List!");
+        }
+
         public static Result Combine(params Result[] results)
         {
             if (results.Any(r => r.IsFailure))
@@ -45,15 +51,15 @@ namespace Logic.Common
 
             return Ok();
         }
-
         
-        public static List<Result> Combines(params Result[] results)
+        public static Result CombineListResult(params Result[] results)
         {
             if (results.Any(r => r.IsFailure))
             {
-                return results.Where(r => r.IsFailure).ToList();
+                return ErrorList(results.Where(r => r.IsFailure).ToList());
+
             }
-            return results.ToList();
+            return Ok(results);
         }
     }
 
@@ -79,5 +85,5 @@ namespace Logic.Common
         {
             _value = value;
         }
-    }    
+    }
 }
